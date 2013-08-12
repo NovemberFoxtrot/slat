@@ -12,21 +12,23 @@ type bigram struct {
 	right rune
 }
 
+type bigramvector []bigram
+
+func (b bigramvector) String() string {
+	var result string
+
+	for _, v := range b {
+		result += string(v.left) // + string(v.right)
+	}
+
+	return result
+}
+
 func (b bigram) String() string {
 	return string(b.left) + string(b.right)
 }
 
-/*
-(
-len(X.union(Y))
--
-len(X.intersection(Y))
-)
-/
-float(len(X.union(Y)))
-*/
-
-func jaccard(x, y []bigram) {
+func jaccard(x, y []bigram) float64 {
 	intersection := make(map[bigram]int)
 	union := make(map[bigram]int)
 
@@ -44,11 +46,7 @@ func jaccard(x, y []bigram) {
 
 	distance := 1 - ((float64(len(union)) - float64(len(intersection))) / float64(len(union)))
 
-	if distance > 0.5 && distance < 1.0 {
-		fmt.Println(distance)
-		fmt.Println(x)
-		fmt.Println(y)
-	}
+	return distance
 }
 
 func main() {
@@ -56,13 +54,13 @@ func main() {
 
 	scanner := bufio.NewScanner(os.Stdin)
 
-	bigramsarray := make([][]bigram, 0)
+	bigramsarray := make([]bigramvector, 0)
 
 	freq := make(map[rune]int)
 	total := 0
 
 	for scanner.Scan() {
-		bigrams := make([]bigram, 0)
+		bigrams := make(bigramvector, 0)
 
 		someline := scanner.Text()
 
@@ -86,9 +84,30 @@ func main() {
 
 	fmt.Println(len(freq), freq, total, "lexd", lexd, "avg", avg)
 
+	results := make(map[string]float64)
+
 	for _, x := range bigramsarray {
 		for _, y := range bigramsarray {
-			jaccard(x, y)
+			var k1 string
+			var k2 string
+
+			if results[k1+k2] > 0.0 || results[k2+k1] > 0.0 {
+				continue
+			}
+
+			for _, v := range x {
+				k1 += string(v.left) + string(v.right)
+			}
+			for _, v := range y {
+				k2 += string(v.left) + string(v.right)
+			}
+
+			distance := jaccard(x, y)
+			if distance > 0.5 && distance < 1.0 {
+				fmt.Println(distance)
+				fmt.Println(x)
+				fmt.Println(y)
+			}
 		}
 	}
 }
