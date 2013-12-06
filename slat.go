@@ -86,8 +86,8 @@ func main() {
 
 	results := make(map[string]float64)
 
-	for _, x := range bigramsarray {
-		for _, y := range bigramsarray {
+	for i, x := range bigramsarray {
+		for _, y := range bigramsarray[:i] {
 			var k1 string
 			var k2 string
 
