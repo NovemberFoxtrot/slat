@@ -18,7 +18,7 @@ func (b bigramvector) String() string {
 	var result string
 
 	for _, v := range b {
-		result += string(v.left) // + string(v.right)
+		result += string(v.left)
 	}
 
 	return result
