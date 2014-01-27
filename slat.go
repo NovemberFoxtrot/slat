@@ -4,7 +4,6 @@ import (
 	"bufio"
 	"fmt"
 	"os"
-	"runtime"
 )
 
 type bigram struct {
@@ -50,8 +49,6 @@ func jaccard(x, y []bigram) float64 {
 }
 
 func main() {
-	runtime.GOMAXPROCS(runtime.NumCPU())
-
 	scanner := bufio.NewScanner(os.Stdin)
 
 	bigramsarray := make([]bigramvector, 0)
